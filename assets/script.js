@@ -19,11 +19,48 @@ const slides = [
 
 const arrowLeft = document.querySelector('.arrow_left');
 const arrowRight = document.querySelector('.arrow_right');
+const dots = document.querySelectorAll('.dot');
+const SlideImg = document.querySelector('.banner-img');
 
-arrowLeft.addEventListener('click', function() {
-  console.log('Bouton left cliqué');
+let currentIndex = 0;
+
+function updateCarousel(index, direction) {
+
+    if (currentIndex === -1 && direction === 'left') {
+      currentIndex = slides.length - 1;
+  } else if (currentIndex === slides.length && direction === 'right') {
+      currentIndex = 0;
+  }
+
+  const imagePath = `assets/images/slideshow/${slides[currentIndex].image}`;
+  SlideImg.src = imagePath;
+  SlideImg.alt = `Slide ${currentIndex + 1}`;
+
+  const tagLine = slides[currentIndex].tagLine;
+  document.querySelector('p').innerHTML = tagLine;
+
+  console.log(`Clic sur la flèche ${direction}`);
+}
+
+function updateDots(index) {
+    dots.forEach((dot, i) => {
+        if (i === index) {
+            dot.classList.add('dot_selected'); 
+        } else {
+            dot.classList.remove('dot_selected'); 
+        }
+    });
+}
+
+arrowLeft.addEventListener('click', function () {
+    currentIndex = (currentIndex - 1);
+    updateCarousel(currentIndex, 'left');
+    updateDots(currentIndex);
 });
 
-arrowRight.addEventListener('click', function() {
-  console.log('Bouton right cliqué');
+arrowRight.addEventListener('click', function () {
+    currentIndex = (currentIndex + 1) ;
+    updateCarousel(currentIndex, 'right');
+    updateDots(currentIndex);
 });
+
