@@ -17,50 +17,40 @@ const slides = [
     }
 ];
 
-const arrowLeft = document.querySelector('.arrow_left');
-const arrowRight = document.querySelector('.arrow_right');
-const dots = document.querySelectorAll('.dot');
-const SlideImg = document.querySelector('.banner-img');
-
-let currentIndex = 0;
-
-function updateCarousel(index, direction) {
-
-    if (currentIndex === -1 && direction === 'left') {
-      currentIndex = slides.length - 1;
-  } else if (currentIndex === slides.length && direction === 'right') {
-      currentIndex = 0;
+const elements = {
+    arrowLeft: document.querySelector(".arrow_left"),
+    arrowRight: document.querySelector(".arrow_right"),
+    dots: document.querySelectorAll(".dot"),
+    slideImg: document.querySelector(".banner-img"),
+    tagLineElement: document.querySelector("p"),
+  };
+  
+  let currentIndex = 0;
+  
+  function updateCarousel(index) {
+    const { image, tagLine } = slides[index];
+    const imagePath = `assets/images/slideshow/${image}`;
+  
+    Object.assign(elements.slideImg, { src: imagePath, alt: `Slide ${index + 1}` });
+    elements.tagLineElement.innerHTML = tagLine;
   }
-
-  const imagePath = `assets/images/slideshow/${slides[currentIndex].image}`;
-  SlideImg.src = imagePath;
-  SlideImg.alt = `Slide ${currentIndex + 1}`;
-
-  const tagLine = slides[currentIndex].tagLine;
-  document.querySelector('p').innerHTML = tagLine;
-
-  console.log(`Clic sur la flèche ${direction}`);
-}
-
-function updateDots(index) {
-    dots.forEach((dot, i) => {
-        if (i === index) {
-            dot.classList.add('dot_selected'); 
-        } else {
-            dot.classList.remove('dot_selected'); 
-        }
+  
+  function updateDots(index) {
+    elements.dots.forEach((dot, i) => {
+      dot.classList.toggle("dot_selected", i === index);
     });
-}
-
-arrowLeft.addEventListener('click', function () {
-    currentIndex = (currentIndex - 1);
-    updateCarousel(currentIndex, 'left');
+  }
+  
+  function navigateCarousel(direction) {
+    if (direction === "left") {
+      currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+    } else if (direction === "right") {
+      currentIndex = (currentIndex + 1) % slides.length;
+    }
+    updateCarousel(currentIndex);
     updateDots(currentIndex);
-});
-
-arrowRight.addEventListener('click', function () {
-    currentIndex = (currentIndex + 1) ;
-    updateCarousel(currentIndex, 'right');
-    updateDots(currentIndex);
-});
+  }
+  
+  elements.arrowLeft.addEventListener("click", () => navigateCarousel("left"));
+  elements.arrowRight.addEventListener("click", () => navigateCarousel("right"));
 
